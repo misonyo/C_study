@@ -33,7 +33,7 @@ void can_main(void)
 #endif
 
 /* ============================ [ FUNCTIONS ] ====================================================== */
-#if 0
+
 int main(int argc,char *argv[])
 {
 	//product_consumer_main();
@@ -46,16 +46,3 @@ int main(int argc,char *argv[])
 
 	return 0;
 }
-#else
-int main(int argc,char *argv[])	/*Dynamic Link Library*/
-{
-	void *pdlHandle = dlopen("./eval.so", RTLD_LAZY);
-	assert(pdlHandle != NULL);
-	void (*pSymbol)(const char *expr) =(void (*)(const char *))dlsym(pdlHandle, "eval_main");
-	assert(pSymbol != NULL);
-
-	eval_main(argv[1]);
-
-	dlclose(pdlHandle);
-}
-#endif
