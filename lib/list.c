@@ -23,11 +23,19 @@
 
 /* ============================ [ FUNCTIONS ] ====================================================== */
 
-void dlist_init(struct dlist_node* list)
+struct dlist_node* dlist_init(void)
 {
-    list->next = NULL;
-    list->prev = NULL;
+    struct dlist_node* list_head = NULL;
+
+    list_head = malloc(sizeof(struct dlist_node));
+
+    list_head->next = NULL;
+    list_head->prev = NULL;
+    list_head->data = NULL;
+
+    return list_head;
 }
+
 
 /**
  * @brief insert a node before a list
@@ -54,6 +62,40 @@ void dlist_insert_after(struct dlist_node* node,struct dlist_node* new_node)
     node->next = new_node;
 }
 
+void dlist_insert_head(struct dlist_node* list_head,struct dlist_node* new_node)
+{
+    new_node->next = list_head;
+    new_node->prev = list_head->prev;
+
+    list_head->prev->next = new_node;
+    list_head->prev = new_node;
+
+    list_head = new_node;
+}
+
+void dlist_insert_tail(struct dlist_node* list_head,struct dlist_node* new_node)
+{
+    new_node->next = list_head;
+    new_node->prev = list_head->prev;
+
+    list_head->prev->next = new_node;
+    list_head->prev = new_node;
+}
+
+void dlist_print(struct dlist_node* list_head,dlist_data_print print_func)
+{
+    struct dlist_node* temp = list_head;
+
+    do{
+        print_func(temp->data);
+        temp = temp->next;
+    }while(temp != list_head);
+}
+
+void print_int(void* data)
+{
+    printf("%d\n",(int)data);
+}
 void slist_init(struct dlist_node* list)
 {
     list->next = NULL;
