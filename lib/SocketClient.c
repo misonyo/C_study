@@ -1,3 +1,4 @@
+#if 0
 /* ============================ [ INCLUDES  ] ====================================================== */
 #include <stdio.h>
 #include <string.h>
@@ -42,10 +43,10 @@ void recv_file(int socket)
     FILE *RecvFile;
     int RecvLen=0,WriteLen=0;
     send(socket,string,strlen(string),0);
-    RecvFile = fopen("./server2.c", "w+");//以二进制方式打开（创建）文件
+    RecvFile = fopen("./server2.c", "w+");//浠ヤ簩杩涘埗鏂瑰紡鎵撳紑锛堝垱寤猴級鏂囦欢
 	(RecvFile != NULL) ? printf("open file successful!\n") : printf("open file failed");
 	do {
-		RecvLen=recv(socket,RecvBuffer,RecvBuffer_SIZE,0);	/*recv()返回读入的字节数*/
+		RecvLen=recv(socket,RecvBuffer,RecvBuffer_SIZE,0);	/*recv()杩斿洖璇诲叆鐨勫瓧鑺傛暟*/
 		if(RecvLen > 0)
 		{
 			RecvBuffer[RecvLen]='\0';
@@ -62,15 +63,15 @@ int SocketClient_init(char* IpAddr)
 	int err;
 	char recvBuf[100];
 	char* str = "this is SocketClient";
-	int SockClient=socket(AF_INET,SOCK_STREAM,0);	/*建立通讯socket	*/
+	int SockClient=socket(AF_INET,SOCK_STREAM,0);	/*寤虹珛閫氳socket	*/
 	struct sockaddr_in addrSrv;
-	addrSrv.sin_addr.s_addr=inet_addr(IpAddr);	/*设定需要连接的服务器的ip地址,把字符串形式的IP地址转成IN_ADDR结构需要的形式。*/
+	addrSrv.sin_addr.s_addr=inet_addr(IpAddr);	/*璁惧畾闇�瑕佽繛鎺ョ殑鏈嶅姟鍣ㄧ殑ip鍦板潃,鎶婂瓧绗︿覆褰㈠紡鐨処P鍦板潃杞垚IN_ADDR缁撴瀯闇�瑕佺殑褰㈠紡銆�*/
 	addrSrv.sin_family=AF_INET;
-	addrSrv.sin_port=htons(8989);	/*设定需要连接的服务器的端口地址*/
-	connect(SockClient,(struct sockaddr*)&addrSrv,sizeof(struct sockaddr));	/*与服务器进行连接*/
-	recv(SockClient,recvBuf,100,0);	/*接受来自server的信息*/
-	printf("from server：%s\n",recvBuf);
-	send(SockClient,str,strlen(str),0);	/*发送信息*/
+	addrSrv.sin_port=htons(8989);	/*璁惧畾闇�瑕佽繛鎺ョ殑鏈嶅姟鍣ㄧ殑绔彛鍦板潃*/
+	connect(SockClient,(struct sockaddr*)&addrSrv,sizeof(struct sockaddr));	/*涓庢湇鍔″櫒杩涜杩炴帴*/
+	recv(SockClient,recvBuf,100,0);	/*鎺ュ彈鏉ヨ嚜server鐨勪俊鎭�*/
+	printf("from server锛�%s\n",recvBuf);
+	send(SockClient,str,strlen(str),0);	/*鍙戦�佷俊鎭�*/
 	return SockClient;
 }
 void SocketClient_main(void)
@@ -82,3 +83,5 @@ void SocketClient_main(void)
 
 	close(SockClient);
 }
+
+#endif

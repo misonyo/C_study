@@ -7,7 +7,8 @@
 /* ============================ [ INCLUDES  ] ====================================================== */
 #include <stdio.h>
 #include <stdint.h>
-
+#include <stdlib.h>
+#include <ctype.h>
 #include <assert.h>
 #include "list.h"
 
@@ -23,15 +24,28 @@
 
 /* ============================ [ FUNCTIONS ] ====================================================== */
 
-struct dlist_node* dlist_init(void)
+struct dlist_node* dlist_init(int node_num)
 {
-    struct dlist_node* list_head = NULL;
+    struct dlist_node* new_node, *list_head;
+    int n;
 
-    list_head = malloc(sizeof(struct dlist_node));
+    for (n=0;n<node_num;n++)
+    {
+        if (0 == n)
+        {
+            list_head = (struct dlist_node*)malloc(sizeof(struct dlist_node));
+            list_head->next = list_head;
+            list_head->prev = list_head;
+            list_head->data = NULL;
+        }
+        else
+        {
+            new_node = (struct dlist_node*)malloc(sizeof(struct dlist_node));
+            new_node->data = NULL;
 
-    list_head->next = NULL;
-    list_head->prev = NULL;
-    list_head->data = NULL;
+            dlist_insert_after(list_head,new_node);
+        }
+    }
 
     return list_head;
 }
@@ -50,7 +64,6 @@ void dlist_insert_before(struct dlist_node* node,struct dlist_node* new_node)
 
     node->prev->next = new_node;
     node->prev = new_node;
-
 }
 
 void dlist_insert_after(struct dlist_node* node,struct dlist_node* new_node)
@@ -82,19 +95,54 @@ void dlist_insert_tail(struct dlist_node* list_head,struct dlist_node* new_node)
     list_head->prev = new_node;
 }
 
-void dlist_print(struct dlist_node* list_head,dlist_data_print print_func)
+void dlist_foreach(struct dlist_node* list_head,dlist_func visit,void* ctx)
 {
     struct dlist_node* temp = list_head;
 
     do{
-        print_func(temp->data);
+        visit(ctx, temp->data);
         temp = temp->next;
     }while(temp != list_head);
 }
 
-void print_int(void* data)
+void print_int(void* ctx, void* data)
 {
-    printf("%d\n",(int)data);
+    printf("%d  ",(int)data);
+}
+
+void find_max(void* ctx, void* data)
+{
+
+    if ((int)data > *((int*)ctx))
+    {
+        *(int*)ctx = (int)data;
+    }
+
+}
+
+void cal_total(void* ctx, void* data)
+{
+    (*(int*)ctx) += (int)data;
+}
+
+void print_str(void* ctx, void* data)
+{
+    printf("%s  ",(char*)data);
+}
+
+void str_toupper(void* ctx, void* data)
+{
+    char* str = data;
+
+    int n = 0;
+    char temp;
+
+    while(str[n] != '\0')
+    {
+        temp = toupper(str[n]);
+        str[n] = temp;
+        n++;
+    }
 }
 void slist_init(struct dlist_node* list)
 {

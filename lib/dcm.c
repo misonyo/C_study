@@ -1,3 +1,5 @@
+#if 0
+
 /* ============================ [ INCLUDES  ] ====================================================== */
 #include <stdio.h>
 #include <stdint.h>
@@ -22,3 +24,6 @@ void dcm_rx_indication(uint8_t *buffer,uint16_t count)
 	cantp_transmit(data,sizeof(data));
 
 }
+
+
+#endif

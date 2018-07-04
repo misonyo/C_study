@@ -1,7 +1,9 @@
-#ifdef _windows_
+#if 0
+
+#ifdef _WIN32
 #include <Winsock2.h>
 #else
-#include <netinet/in.h>
+//#include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #endif
@@ -38,7 +40,7 @@ void sr_file(int socket)
 
 void SocketServer_main()
 {
-#ifdef _windows_
+#ifdef _WIN32
 	/* code that under windows environment needed*/
     WORD wVersionRequested;
     WSADATA wsaData;
@@ -60,8 +62,8 @@ void SocketServer_main()
     addrSrv.sin_addr.s_addr=htonl(INADDR_ANY);	/* */
     addrSrv.sin_family=AF_INET;
     addrSrv.sin_port=htons(8989);	/*transfer port to char*/
-    bind(SockServ,(struct sockaddr*)&addrSrv,sizeof(struct sockaddr));/* socket 绑定到相应的端口和地址*/
-    listen(SockServ,5);/* 最多同时接受５个连接请求*/
+    bind(SockServ,(struct sockaddr*)&addrSrv,sizeof(struct sockaddr));/* socket 缁戝畾鍒扮浉搴旂殑绔彛鍜屽湴鍧�*/
+    listen(SockServ,5);/* 鏈�澶氬悓鏃舵帴鍙楋紩涓繛鎺ヨ姹�*/
     struct sockaddr_in addrClient;
     int len=sizeof(struct sockaddr);
 
@@ -81,3 +83,5 @@ void SocketServer_main()
         close(sockConn);
     }
 }
+
+#endif

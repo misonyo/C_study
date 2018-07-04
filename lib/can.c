@@ -1,3 +1,4 @@
+#if 0
 /* ============================ [ INCLUDES  ] ====================================================== */
 /* most of the code copy from https://github.com/linux-can/can-utils */
 #include <stdio.h>
@@ -146,3 +147,5 @@ void can_main_rxisr(void)
 	}
 
 }
+
+#endif

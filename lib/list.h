@@ -28,15 +28,21 @@ struct slist_node
 };
 typedef struct slist_node slist_t;                /**< Type for single linked list. */
 
-typedef void (*dlist_data_print)(void* data);
+typedef void (*dlist_func)(void* ctx,void* data);
 
-void dlist_init(struct dlist_node* list);
-void dlist_insert_before(struct dlist_node* node,struct dlist_node* new_node);
-void dlist_insert_after(struct dlist_node* node,struct dlist_node* new_node);
-void dlist_insert_head(struct dlist_node* list_head,struct dlist_node* new_node);
-void dlist_insert_tail(struct dlist_node* list_head,struct dlist_node* new_node);
-void dlist_print(struct dlist_node* list_head,dlist_data_print print_func);
-void print_int(void* data);
+struct dlist_node* dlist_init(int node_num);
+void dlist_insert_before(struct dlist_node* node, struct dlist_node* new_node);
+void dlist_insert_after(struct dlist_node* node, struct dlist_node* new_node);
+void dlist_insert_head(struct dlist_node* list_head, struct dlist_node* new_node);
+void dlist_insert_tail(struct dlist_node* list_head, struct dlist_node* new_node);
+void dlist_foreach(struct dlist_node* list_head,dlist_func visit,void* ctx);
+void print_int(void* ctx, void* data);
+void find_max(void* ctx, void* data);
+void cal_total(void* ctx, void* data);
+void str_toupper(void* ctx, void* data);
+void print_str(void* ctx, void* data);
+
+
 
 
 

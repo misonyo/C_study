@@ -25,12 +25,6 @@ static void vfunc_instance2(int a)
 
 void other(void)
 {
-	void (*pf)(int a);
-	pf = vfunc_instance2;
-	printf("on other line %d\n",__LINE__);
-	pf(3);
-	pf = vfunc_instance1;
-	printf("on other line %d\n",__LINE__);
-	pf(4);
+
 
 }

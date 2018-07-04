@@ -1,4 +1,4 @@
-
+#if 0
 
 void can_main(void)
 {
@@ -12,3 +12,5 @@ void can_main(void)
 	} while(1);
 
 }
+
+#endif
