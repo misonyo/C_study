@@ -50,6 +50,24 @@ struct dlist_node* dlist_init(int node_num)
     return list_head;
 }
 
+struct dlist_node* dlist_create_node(void* data)
+{
+    struct dlist_node* new_node;
+
+    new_node = (struct dlist_node*)malloc(sizeof(struct dlist_node));
+    new_node->next = new_node;
+    new_node->prev = new_node;
+    new_node->data = data;
+
+    return new_node;
+}
+
+void dlist_delete_node(struct dlist_node* node)
+{
+     node->prev = node->next;
+     node->next = node->prev;
+     free(node);
+}
 
 /**
  * @brief insert a node before a list
