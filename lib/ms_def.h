@@ -8,6 +8,8 @@
 #ifndef LIB_MS_DEF_H_
 #define LIB_MS_DEF_H_
 
+#include <stdio.h>
+
 /* MS basic data type definitions */
 typedef signed   char                   ms_int8_t;      /**<  8bit integer type */
 typedef signed   short                  ms_int16_t;     /**< 16bit integer type */
@@ -26,11 +28,19 @@ typedef enum
     RET_FAIL
 }ret;
 
-#define return_if_fail(p,ret)                                               \
+#define return_if_fail(p)                                               \
     if(!(p))                                                            \
     {                                                                   \
         printf("%s: %d warning: "#p" failed.\n",__func__,__LINE__);     \
-        return (ret);                                                         \
+        return;                                                         \
     }
 
+#define return_val_if_fail(p,ret)                                       \
+    if(!(p))                                                            \
+    {                                                                   \
+        printf("%s: %d warning: "#p" failed.\n",__func__,__LINE__);     \
+        return (ret);                                                    \
+    }
+
+#define SAFE_FREE(p)    if(p != NULL)    {free(p); p = NULL;}
 #endif /* LIB_MS_DEF_H_ */
