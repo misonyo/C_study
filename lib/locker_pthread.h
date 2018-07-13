@@ -8,16 +8,21 @@
 #ifndef LIB_LOCKER_PTHREAD_H_
 #define LIB_LOCKER_PTHREAD_H_
 
-typedef int (*tasf_self_func)(void);
 
 struct locker
 {
     pthread_mutex_t p_mutex;
 
+    void* owner;
+    ms_int8_t ref_count;
+    void* (*task_self_func)(void);
+
     ret (*lock)(struct locker* thiz);
     ret (*unlock)(struct locker* thiz);
     void (*destroy)(struct locker* thiz);
 };
+
+struct locker* locker_pthread_create(int (*task_self_func)(void));
 
 static inline ret locker_lock(struct locker* thiz)
 {
@@ -42,7 +47,7 @@ static inline void locker_destroy(struct locker* thiz)
     return;
 }
 
-struct locker* locker_pthread_create(void);
+
 
 
 
