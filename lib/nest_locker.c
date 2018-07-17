@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "locker_pthread.h"
+#include "nest_locker.h"
 /* ============================ [ MACROS    ] ====================================================== */
 
 /* ============================ [ TYPES     ] ====================================================== */
@@ -23,7 +23,7 @@
 
 /* ============================ [ FUNCTIONS ] ====================================================== */
 
-static ret locker_pthread_lock(struct locker* thiz)
+static ret nest_locker_lock(struct nest_locker* thiz)
 {
     ret result = RET_OK;
 
@@ -44,7 +44,7 @@ static ret locker_pthread_lock(struct locker* thiz)
     return result;
 }
 
-static ret locker_pthread_unlock(struct locker* thiz)
+static ret nest_locker_unlock(struct nest_locker* thiz)
 {
     ret result = RET_OK;
 
@@ -55,7 +55,7 @@ static ret locker_pthread_unlock(struct locker* thiz)
         if (0 == thiz->ref_count)
         {
             thiz->owner = NULL;
-            result =  pthread_mutex_lock(&thiz->p_mutex);
+            result =  pthread_mutex_unlock(&thiz->p_mutex);
         }
     }
     else
@@ -66,7 +66,7 @@ static ret locker_pthread_unlock(struct locker* thiz)
     return result;
 }
 
-static ret locker_pthread_destroy(struct locker* thiz)
+static ret nest_locker_destroy(struct nest_locker* thiz)
 {
     ret result = RET_OK;
 
@@ -80,11 +80,11 @@ static ret locker_pthread_destroy(struct locker* thiz)
     return result == 0 ? RET_OK : RET_FAIL;
 }
 
-struct locker* locker_pthread_create(int (*task_self_func)(void))
+struct locker* nest_locker_create(int (*task_self_func)(void))
 {
-    struct locker* new_locker;
+    struct nest_locker* new_locker;
 
-    new_locker = (struct locker*)malloc(sizeof(struct locker));
+    new_locker = (struct locker*)malloc(sizeof(struct nest_locker));
 
     if (new_locker != NULL)
     {
@@ -93,9 +93,9 @@ struct locker* locker_pthread_create(int (*task_self_func)(void))
         new_locker->ref_count = 0;
         new_locker->task_self_func = task_self_func;
 
-        new_locker->lock = locker_pthread_lock;
-        new_locker->unlock = locker_pthread_unlock;
-        new_locker->destroy = locker_pthread_destroy;
+        new_locker->lock = nest_locker_lock;
+        new_locker->unlock = nest_locker_unlock;
+        new_locker->destroy = nest_locker_destroy;
     }
 
     return new_locker;

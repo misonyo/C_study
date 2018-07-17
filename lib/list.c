@@ -47,17 +47,21 @@ struct dlist_node* dlist_get_node(struct dlist_tcb* thiz, ms_int32_t index)
 {
     struct dlist_node* index_node = NULL;
 
-    if ((index <= thiz->node_count) && (index > 0))
+    thiz->locker->lock(thiz->locker);
+    index_node = thiz->first;
+    if ((index <= thiz->node_count) && (index >= 0))
     {
-        for (index_node = thiz->first; index_node != thiz->first; index_node = index_node->next)
+        do
         {
-            if (1 == index)
+            if (0 == index)
             {
                 break;
             }
             index --;
-        }
+            index_node = index_node->next;
+        }while(index_node != thiz->first);
     }
+    thiz->locker->unlock(thiz->locker);
 
     return index_node;
 }
@@ -143,7 +147,6 @@ ret dlist_get_by_index(struct dlist_tcb* thiz, size_t index, void** data)
 
     thiz->locker->lock(thiz->locker);
     index_node = dlist_get_node(thiz, index);
-    thiz->locker->unlock(thiz->locker);
 
     if (index_node != NULL)
     {
@@ -153,6 +156,7 @@ ret dlist_get_by_index(struct dlist_tcb* thiz, size_t index, void** data)
     {
         result = RET_INVALID_PARAMS;
     }
+    thiz->locker->unlock(thiz->locker);
 
     return result;
 }
@@ -164,7 +168,6 @@ ret dlist_set_by_index(struct dlist_tcb* thiz, size_t index, void* data)
 
     thiz->locker->lock(thiz->locker);
     index_node = dlist_get_node(thiz, index);
-    thiz->locker->unlock(thiz->locker);
 
     if (index_node != NULL)
     {
@@ -174,6 +177,64 @@ ret dlist_set_by_index(struct dlist_tcb* thiz, size_t index, void* data)
     {
         result = RET_INVALID_PARAMS;
     }
+    thiz->locker->unlock(thiz->locker);
+
+    return result;
+}
+
+ms_int32_t dlist_length(struct dlist_tcb* thiz)
+{
+    return thiz->node_count;
+}
+
+ms_int32_t dlist_find(struct dlist_tcb* thiz, int (*dlist_data_compare)(void* ctx,void* data), void* ctx)
+{
+    struct dlist_node* temp = NULL;
+    ms_int32_t index = 0;
+
+    thiz->locker->lock(thiz->locker);
+    temp = thiz->first;
+    do{
+        if (dlist_data_compare(ctx, temp->data) == 0)
+        {
+            break;
+        }
+        index ++;
+        temp = temp->next;
+    }while(temp != list_head);
+    thiz->locker->unlock(thiz->locker);
+
+    return index;
+}
+
+ret dlist_foreach(struct dlist_tcb* thiz, void (*dlist_func)(void* ctx,void* data), void* ctx)
+{
+    struct dlist_node* temp = NULL;
+    ret result;
+
+    thiz->locker->lock(thiz->locker);
+    temp = thiz->first;
+    do{
+        result = dlist_func(ctx, temp->data);
+        temp = temp->next;
+    }while(temp != list_head);
+    thiz->locker->unlock(thiz->locker);
+
+    return result;
+}
+
+ms_int32_t dlist_data_int_compare(void* ctx,void* data)
+{
+    ms_int32_t result;
+    if ((int)ctx == (int)data)
+    {
+        result = 0;
+    }
+    else
+    {
+        result = -1;
+    }
+
     return result;
 }
 
@@ -230,36 +291,6 @@ void dlist_insert_after(struct dlist_node* node,struct dlist_node* new_node)
     node->next = new_node;
 }
 
-void dlist_insert_head(struct dlist_node* list_head,struct dlist_node* new_node)
-{
-    new_node->next = list_head;
-    new_node->prev = list_head->prev;
-
-    list_head->prev->next = new_node;
-    list_head->prev = new_node;
-
-    list_head = new_node;
-}
-
-void dlist_insert_tail(struct dlist_node* list_head,struct dlist_node* new_node)
-{
-    new_node->next = list_head;
-    new_node->prev = list_head->prev;
-
-    list_head->prev->next = new_node;
-    list_head->prev = new_node;
-}
-
-void dlist_foreach(struct dlist_node* list_head,void (*dlist_func)(void* ctx,void* data),void* ctx)
-{
-    struct dlist_node* temp = list_head;
-
-    do{
-        dlist_func(ctx, temp->data);
-        temp = temp->next;
-    }while(temp != list_head);
-}
-
 void print_int(void* ctx, void* data)
 {
     printf("%d  ",(int)data);
@@ -272,7 +303,6 @@ void find_max(void* ctx, void* data)
     {
         *(int*)ctx = (int)data;
     }
-
 }
 
 void cal_total(void* ctx, void* data)
