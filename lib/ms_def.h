@@ -19,6 +19,7 @@ typedef unsigned short                  ms_uint16_t;    /**< 16bit unsigned inte
 typedef unsigned long                   ms_uint32_t;    /**< 32bit unsigned integer type */
 typedef int                             ms_bool_t;      /**< boolean type */
 
+
 typedef enum
 {
     RET_OK,
@@ -27,6 +28,11 @@ typedef enum
     RET_INVALID_PARAMS,
     RET_FAIL
 }ret;
+
+typedef void     (*data_destroy_func)(void* ctx, void* data);
+typedef int      (*data_compare_func)(void* ctx, void* data);
+typedef ret      (*data_visit_func)(void* ctx, void* data);
+typedef int      (*data_hash_func)(void* data);
 
 #define return_if_fail(p)                                               \
     if(!(p))                                                            \

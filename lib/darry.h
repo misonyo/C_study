@@ -10,9 +10,6 @@
 
 #include "ms_def.h"
 
-typedef void     (*data_destroy_func)(void* ctx, void* data);
-typedef int      (*data_compare_func)(void* ctx, void* data);
-typedef ret      (*data_visit_func)(void* ctx, void* data);
 
 struct darray
 {

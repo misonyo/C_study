@@ -55,6 +55,7 @@ struct dlist_node*      dlist_create_node(void* data);
 void                    dlist_delete_node(struct dlist_node* node);
 void                    dlist_insert_before(struct dlist_node* node, struct dlist_node* new_node);
 void                    dlist_insert_after(struct dlist_node* node, struct dlist_node* new_node);
+
 void                    print_int(void* ctx, void* data);
 void                    find_max(void* ctx, void* data);
 void                    cal_total(void* ctx, void* data);
