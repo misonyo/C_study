@@ -1,4 +1,4 @@
-#if 0
+#if 1
 
 #ifdef _WIN32
 #include <Winsock2.h>
@@ -57,24 +57,33 @@ void SocketServer_main()
     }
 #endif
     /*the socket part*/
-    int SockServ=socket(AF_INET,SOCK_STREAM,0);
+    /* AF_INET(Ipv4),SOCK_STREAM(有序、可靠、双向的面向连接字节流（TCP）),0(按照前面的参数选择默认的传输协议) */
+    int SockServ=socket(AF_INET,SOCK_STREAM,0);   /* 创建一个网络套接字 */
+
     struct sockaddr_in addrSrv;
-    addrSrv.sin_addr.s_addr=htonl(INADDR_ANY);	/* */
-    addrSrv.sin_family=AF_INET;
-    addrSrv.sin_port=htons(8989);	/*transfer port to char*/
-    bind(SockServ,(struct sockaddr*)&addrSrv,sizeof(struct sockaddr));/* socket 缁戝畾鍒扮浉搴旂殑绔彛鍜屽湴鍧�*/
+    addrSrv.sin_addr.s_addr=htonl(INADDR_ANY);    /* IP地址：htonl(主机数转换成无符号长整形的网络字节顺序), INADDR_ANY(系统会自动填入本机的IP地址) */
+    addrSrv.sin_family=AF_INET;                   /* sin_family一般固定写 AF_INET */
+    addrSrv.sin_port=htons(8989);                 /* 端口号：htons(将整型变量从主机字节顺序转变成网络字节顺序) */
+
+    bind(SockServ,(struct sockaddr*)&addrSrv,sizeof(struct sockaddr));/* 将套接字与计算机上的一个端口号相绑定 */
     listen(SockServ,5);/* 鏈�澶氬悓鏃舵帴鍙楋紩涓繛鎺ヨ姹�*/
+
     struct sockaddr_in addrClient;
     int len=sizeof(struct sockaddr);
 
     while(1)
     {
         int sockConn=accept(SockServ,(struct sockaddr*)&addrClient,&len);
+
         char sendBuf[100];
         sprintf(sendBuf,"Server IP is:%s",inet_ntoa(addrClient.sin_addr));
+
         send(sockConn,sendBuf,strlen(sendBuf)+1,0);
+
         char recvBuf[100];
+
         int len = recv(sockConn,recvBuf,100,0);
+
         recvBuf[len] = 0;
         printf("%s\n",recvBuf);
         
